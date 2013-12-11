@@ -4,4 +4,4 @@ scalaVersion := "2.10.0"
 
 scalacOptions in (Compile, doc) ++= Opts.doc.title("ReactiveMongo API")
 
-scalacOptions in (Compile, doc) ++= Opts.doc.version("0.9-SNAPSHOT")
+scalacOptions in (Compile, doc) ++= Opts.doc.version("0.9-commercehub-SNAPSHOT")
