@@ -4,4 +4,6 @@ scalaVersion := "2.10.0"
 
 scalacOptions in (Compile, doc) ++= Opts.doc.title("ReactiveMongo API")
 
-scalacOptions in (Compile, doc) ++= Opts.doc.version("0.9-commercehub-SNAPSHOT")
+// Adding .0 (followed by anything) makes our version appear later than the one it is based on.
+// Also change this in ReactiveMongo.scala
+scalacOptions in (Compile, doc) ++= Opts.doc.version("0.9.0-commercehub-1")

@@ -2,7 +2,9 @@ import sbt._
 import sbt.Keys._
 
 object BuildSettings {
-  val buildVersion = "0.9"
+  // Adding .0 (followed by anything) makes our version appear later than the one it is based on.
+  // Also change this in build.sbt
+  val buildVersion = "0.9.0-commercehub-1"
 
   val filter = { (ms: Seq[(File, String)]) =>
     ms filter {
@@ -18,7 +20,7 @@ object BuildSettings {
     crossScalaVersions := Seq("2.10.0"),
     crossVersion := CrossVersion.binary,
     scalacOptions ++= Seq("-unchecked", "-deprecation" /*, "-Xlog-implicits", "-Yinfer-debug", "-Xprint:typer", "-Yinfer-debug", "-Xlog-implicits", "-Xprint:typer"*/ ),
-    scalacOptions in (Compile, doc) ++= Seq("-unchecked", "-deprecation", "-diagrams", "-implicits"),
+    scalacOptions in (Compile, doc) ++= Seq("-unchecked", "-deprecation", /*"-diagrams",*/ "-implicits"),
     shellPrompt := ShellPrompt.buildShellPrompt,
     mappings in (Compile, packageBin) ~= filter,
     mappings in (Compile, packageSrc) ~= filter,
@@ -28,36 +30,47 @@ object BuildSettings {
 object Publish {
   object TargetRepository {
     def local: Project.Initialize[Option[sbt.Resolver]] = version { (version: String) =>
-      val localPublishRepo = "/Volumes/Data/code/repository"
+      val localPublishRepo = "d:/.ivy2/repositories/user-local"
+      val localIvyPatterns: Patterns = Patterns(Seq("[organisation]/[module]/[revision]/[type]s/[artifact].[ext]"), //ivys
+        Seq("[organisation]/[module]/[revision]/([edition]/)([platform]/)[type]s/[artifact].[ext]"), //artifacts
+        false) //not maven-style
+      /*
       if (version.trim.endsWith("SNAPSHOT"))
-        Some(Resolver.file("snapshots", new File(localPublishRepo + "/snapshots")))
-      else Some(Resolver.file("releases", new File(localPublishRepo + "/releases")))
+        Some(Resolver.file("snapshots", new File(localPublishRepo + "/snapshots"))(localIvyPatterns))
+      else Some(Resolver.file("releases", new File(localPublishRepo + "/releases"))(localIvyPatterns))
+      */
+      Some(Resolver.file("user-local", new File(localPublishRepo))(localIvyPatterns))
     }
-    def sonatype: Project.Initialize[Option[sbt.Resolver]] = version { (version: String) =>
+    /* def sonatype: Project.Initialize[Option[sbt.Resolver]] = version { (version: String) =>
       val nexus = "https://oss.sonatype.org/"
       if (version.trim.endsWith("SNAPSHOT"))
         Some("snapshots" at nexus + "content/repositories/snapshots")
       else
         Some("releases" at nexus + "service/local/staging/deploy/maven2")
-    }
+    }*/
   }
   lazy val settings = Seq(
-    publishMavenStyle := true,
-    publishTo <<= TargetRepository.sonatype,
+    publishMavenStyle := false, 
+    publishTo <<= TargetRepository.local,
     publishArtifact in Test := false,
     pomIncludeRepository := { _ => false },
     licenses := Seq("Apache 2.0" -> url("http://www.apache.org/licenses/LICENSE-2.0")),
-    homepage := Some(url("http://reactivemongo.org")),
+    homepage := Some(url("https://github.com/pmogren/ReactiveMongo/")),
     pomExtra := (
       <scm>
-        <url>git://github.com/zenexity/ReactiveMongo.git</url>
-        <connection>scm:git://github.com/zenexity/ReactiveMongo.git</connection>
+        <url>git://github.com/pmogren/ReactiveMongo.git</url>
+        <connection>scm:git://github.com/pmogren/ReactiveMongo.git</connection>
       </scm>
       <developers>
         <developer>
           <id>sgodbillon</id>
           <name>Stephane Godbillon</name>
           <url>http://stephane.godbillon.com</url>
+        </developer>
+        <developer>
+          <id>pmogren</id>
+          <name>Paul Mogren</name>
+          <url>http://www.commercehub.com</url>
         </developer>
       </developers>))
 }

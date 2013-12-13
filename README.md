@@ -1,6 +1,29 @@
+# COMMERCEHUB
+https://github.com/pmogren/ReactiveMongo/ forked from https://github.com/ReactiveMongo/ReactiveMongo
+
+## Building
+Build files are customized for publishing CommerceHub internal versions. 
+To build, first ensure that Java 7, SBT, and Git are on the PATH. Then run ```sbt clean package publish```. That will publish to ```d:\.ivy2\repositories\user-local```. 
+
+## Versioning
+To create a new version, edit the version string in ```build.sbt``` and ```ReactiveMongo.scala```.
+If rebasing to a newer upstream version, append ```.0-commercehub-1``` to the upstream version. This makes our version appear later than the one it is based on.
+If patching an existing CommerceHub version, just increment the last number.
+While developing and testing the patch, you can append -SNAPSHOT if you want. 
+
+## Publishing
+Ensure that you have increased the version string per above.
+Remove -SNAPSHOT, commit and push all changes to GitHub, and wait for approval from Travis CI (follow the Build Status link below).
+Only then should you build the final jars which will be published for others to use.
+After testing from there, use our PublishToIvy tool to copy your new version to the "IvyDevThirdPartyRepository".
+
+# /COMMERCEHUB
+Upstream documentation follows. All links therein point to upstream, except for the Build Status.
+
+
 # ReactiveMongo - Asynchronous & Non-Blocking Scala Driver for MongoDB
 
-[![Build Status](https://travis-ci.org/zenexity/ReactiveMongo.png?branch=master)](https://travis-ci.org/zenexity/ReactiveMongo)
+[![Build Status](https://travis-ci.org/pmogren/ReactiveMongo.png?branch=master)](https://travis-ci.org/pmogren/ReactiveMongo)
 
 [ReactiveMongo](https://github.com/zenexity/ReactiveMongo/) is a scala driver that provides fully non-blocking and asynchronous I/O operations.
 
